@@ -1,0 +1,1 @@
+tail -50  $LOCALAPPDATA/../Roaming/.minecraft/logs/latest.log | grep "The nearest" | tail -1 | sed 's/^.*The nearest //' | cut -d "[" -f2 | cut -d "]" -f1 | sed 's/~/256/g' | sed 's/,//g' > "coords.txt"
