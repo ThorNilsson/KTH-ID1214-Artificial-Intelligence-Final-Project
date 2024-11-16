@@ -4,11 +4,11 @@
 ^!r:: Reload ; Ctrl+Alt+R
 
 structures := [
-    "desert_pyramid",
+    "village_savanna",
     "mansion",
+    "desert_pyramid",
     "village_desert",
     "igloo",
-    "village_savanna",
     "shipwreck",
     "village_plains",
     "swamp_hut",
@@ -41,79 +41,41 @@ structures := [
     "minecraft:trail_ruins", */
 ]
 
-^r::
+^r:: ; Ctrl+R
 {
-    takeScreenshot(structures[1])
-    ;findStructure(structures[1])
+    for structure in structures {
+        findStructure(structure)
 
-    /*     for structure in structures {
-            findStructure(structure)
-            Sleep 10000
-    } */
+        takeScreenshot(structure)
+    }
 }
 
 findStructure(structure) {
+    Sleep 200
     Send "t"
-    Sleep 100
-    send "/locate structure " structure "{Enter}"
-    Sleep 100
+    Sleep 200
+    send "/locate structure " structure
+    Sleep 1000
+    Send "{Enter}"
+    Sleep 3000
 
     RunWait("getCoordinatesFromLog.sh", , 'Hide')
-    Sleep 500
+    Sleep 2000
 
     Send "{Escape}"
-    Sleep 100
+    Sleep 200
     Send "t"
-    Sleep 100
+    Sleep 200
 
     coords := FileRead("coords.txt")
     Send "/tp @s " coords "{Enter}"
-}
-
-goToLocation(x, y, z) {
-    Send "t"
-    Sleep 100
-    Send "/tp @s " x " " y " " z "{Enter}"
-}
-
-rotateCamera(x, y) {
-    Send "t"
-    Sleep 100
-    Send "/tp @s ~ ~ ~ " x " " y "{Enter}"
+    Sleep 8000
 }
 
 takeScreenshot(structure) {
-    Send "{PrintScreen}"
+    Send "#{PrintScreen}"
     Sleep 1000
-    Click('left', 100, 100)
-
-    ;Move the latest screenshot to the TrainingData folder
-    RunWait("moveLatestScreenshotToTrainingData.bat", , 'Hide')
-
-    /*     Sleep 1000
-    Send "{Enter}" */
-
-    ;Sleep 1000
-    ;Run("explorer.exe C:\Users\thor7\Dev\KTH-ID1214-Artificial-Intelligence-Final-Project\TrainingData")
-    ;Sleep 2000
-    ;Send "^v"
-
-    ;Take a screenshot of the structure and save it in the TrainingData folder
-    ; Assuming the screenshot is copied to the clipboard
-    ; Open Paint to paste and save the screenshot
-    Run("mspaint.exe")
+    RunWait("moveScreenshot.sh " structure, , 'Hide')
     Sleep 2000
-    Send("^v") ; Paste the screenshot
-    Sleep 1000
-    Send("^s") ; Save the file
-    Sleep 1000
-
-    ; Navigate to the TrainingData folder and save the file with a unique name
-    ;Send("{Alt down}f{Alt up}a") ; Open Save As dialog
-    ;Sleep 1000
-    Send A_WorkingDir "\TrainingData\" structure "\" structure " A_Now.png { Enter }"
-    Sleep 2000
-
-    Send("!{F4}") ; Close Paint
-    Send("{Enter}")
+    Send "{Escape}"
 }
