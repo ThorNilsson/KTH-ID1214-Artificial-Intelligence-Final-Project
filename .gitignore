@@ -1,2 +1,5 @@
 # Ignore the trainingdata folder
 trainingdata/
+
+# Ignore .env files
+.env
