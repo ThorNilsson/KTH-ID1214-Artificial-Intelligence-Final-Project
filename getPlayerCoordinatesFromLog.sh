@@ -5,4 +5,4 @@
 
 MINECRAFT_LOG_SOURCE=$(cat .env | grep MINECRAFT_LOG_SOURCE= | sed 's/^.*=//')
 
-tail -n 50  $MINECRAFT_LOG_SOURCE | grep "Teleported" | tail -1 | sed 's/^.*to//' > "coords.txt"
+tail -n 50  "$MINECRAFT_LOG_SOURCE" | grep "Teleported" | tail -1 | sed 's/^.*to//' > "coords.txt"
