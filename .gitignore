@@ -1,5 +1,13 @@
 # Ignore the trainingdata folder
 trainingdata/
 
+# Ignore test files
+test.ahk
+test.exe
+
+# Ignore bash scripts with system specific commands
+getCoordinatesFromLog.sh
+getPlayerCoordinatesFromLog.sh
+
 # Ignore .env files
 .env
