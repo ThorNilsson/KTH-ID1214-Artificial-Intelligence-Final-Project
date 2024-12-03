@@ -1,5 +1,5 @@
 # Ignore the trainingdata folder
-trainingdata/
+#trainingdata/
 
 # Ignore test files
 test.ahk
@@ -11,3 +11,6 @@ getPlayerCoordinatesFromLog.sh
 
 # Ignore .env files
 .env
+
+# Ignore coordinates file
+coords.txt
