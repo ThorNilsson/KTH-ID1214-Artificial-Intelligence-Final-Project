@@ -23,30 +23,6 @@ structuresObj := {
     jungle_pyramid: ["jungle_pyramid", 14],
     pillager_outpost: ["pillager_outpost", 14],
 }
-; Maybe
-;"fortress",
-/*     "minecraft:ruined_portal",
-    "minecraft:ruined_portal_desert",
-    "minecraft:ruined_portal_jungle",
-    "minecraft:ruined_portal_mountain",
-    "minecraft:ruined_portal_nether",
-    "minecraft:ruined_portal_ocean",
-"minecraft:ruined_portal_swamp",
-*/
-; Not Now
-/*     "minecraft:ancient_city",
-    "minecraft:monument",
-    "minecraft:bastion_remnant",
-    "minecraft:buried_treasure",
-    "minecraft:end_city",
-    "minecraft:mineshaft",
-    "minecraft:mineshaft_mesa",
-    "minecraft:nether_fossil",
-    "minecraft:ocean_ruin_cold",
-    "minecraft:ocean_ruin_warm",
-    "minecraft:stronghold",
-"minecraft:trail_ruins",
-*/
 
 ; 1. Select the structure
 current := structuresObj.igloo
@@ -54,15 +30,8 @@ current := structuresObj.igloo
 ; 2. Prepare the environment and move to the structure
 ^g:: ; Ctrl+G
 {
-    Send "t"
-    Sleep 200
-    Send "/weather clear {Enter}"
-    Sleep 200
-    Send "t"
-    Sleep 200
-    Send "/time set day {Enter}"
-    Sleep 200
-
+    mcCommand("/weather clear")
+    mcCommand("/time set day")
     findStructure(current[1])
 }
 
@@ -71,6 +40,14 @@ current := structuresObj.igloo
 {
     scanStructure(current*)
     MsgBox("Scanning complete")
+}
+
+; 4. Place the structure
+^i:: ; Ctrl+i
+{
+    mcCommand("/weather clear")
+    mcCommand("/time set day")
+    placeStructure(current[1])
 }
 
 toggleFlying() {
@@ -85,50 +62,37 @@ toggleFlying() {
 }
 
 findStructure(structure) {
-    Sleep 1000
-    Send "t"
-    Sleep 400
     time := A_Now
-    Sleep 400
-    send "/locate structure " structure "{Enter}"
+
+    mcCommand("/locate structure " structure)
+
     coords := getStructureCoordsFromLog(time)
-    ;MsgBox(structure " " coords)
 
-    Sleep 500
-    Send "t"
-    Sleep 200
-    Send "/tp @s " coords "{Enter}"
+    teleportTo(coords)
 
-    Sleep 200
-    Send "t"
-    Sleep 200
-    Send "/gamemode creative {Enter}"
-
+    mcCommand("/gamemode creative")
     toggleFlying()
-
     Sleep 8000
 
-    Sleep 200
-    Send "t"
-    Sleep 200
-    Send "/gamemode spectator {Enter}"
-    Sleep 200
-
+    mcCommand("/gamemode spectator")
 }
 
-takeScreenshot(structure) {
-    Send "#{PrintScreen}"
-    Sleep 1000
-    RunWait("moveScreenshot.sh " structure, , 'Hide')
-    Sleep 2000
-    Send "{Escape}"
+placeStructure(structure) {
+    mcCommand("/place structure " structure)
+}
+
+mcCommand(command) {
+    Send "t"
+    Sleep 50
+    Send command "{Enter}"
+    Sleep 50
 }
 
 moveScreenshots(structure) {
     DirExist("TrainingData\" structure) || DirCreate("TrainingData\" structure)
     loop files SCREENSHOT_SOURCE_DIR "\*.png" {
-        if (DateDiff(A_Now, A_LoopFileTimeCreated, "s") <= 5) {
-            FileMove A_LoopFileFullPath, "TrainingData\" structure "\" A_LoopFileName
+        if (FileExist(A_LoopFileFullPath) && DateDiff(A_Now, A_LoopFileTimeCreated, "s") <= 30) {
+            FileMove(A_LoopFileFullPath, "TrainingData\" structure "\" A_LoopFileName)
         }
     }
 }
@@ -142,6 +106,7 @@ scanStructure(structure, radius, levels := [-12, -8, 0, 8], angles := [10, 20, 3
     i := 1
     pi := 3.14159265359
 
+    Send "{F1}"
     for index, level in levels {
         loop picturesPerLevel {
             radians := ((360 / picturesPerLevel) * i) * (pi / 180)
@@ -152,23 +117,17 @@ scanStructure(structure, radius, levels := [-12, -8, 0, 8], angles := [10, 20, 3
             yAngle := angles[index]
 
             teleportTo(x, z, y, xAngle, yAngle)
-            Send "{F1}"
-            Sleep 200
-            Send "#{PrintScreen}"
-            Sleep 500
-            Send "{F1}"
-            moveScreenshots(structure)
+            Send "{F2}" ; Take a screenshot
             i++
         }
     }
+    Send "{F1}"
     teleportTo(center[1], center[2], center[3])
+    moveScreenshots(structure)
 }
 
 teleportTo(x := "~", z := "~", y := "~", xAngle := 0, yAngle := 0) {
-    Send "t"
-    Sleep 100
-    Send "/tp @s " x "  " z "  " y "  " xAngle " " yAngle "{Enter}"
-    Sleep 200
+    mcCommand("/tp @s " x "  " z "  " y "  " xAngle " " yAngle)
 }
 
 getEnv(key) {
@@ -238,77 +197,5 @@ getStructureCoordsFromLog(time) {
             }
         }
         Sleep 200
-    }
-}
-
-getCoords() {
-    Send "t"
-    Sleep 200
-    Send "/tp @s ~  ~  ~ {Enter}"
-    Sleep 10000
-
-    RunWait("getPlayerCoordinatesFromLog.sh", , 'Hide')
-    Sleep 2000
-
-    inputCoords := Trim(FileRead("coords.txt"), OmitChars := "{A_Space}")
-    centre := StrSplit(inputCoords, ",", OmitChars := " ")
-    centre[3] := Trim(centre[3], OmitChars := "`r`n")
-
-    coords := []
-
-    radius := 25
-    divisions := 12
-    levels := 1
-
-    width := 13
-    height := 20
-    length := 13
-
-    centre[1] := centre[1] + (length / 2)
-    centre[2] := centre[2] + (height / 2)
-    centre[3] := centre[3] + (width / 2)
-
-    centreCoords := centre[1] " " centre[2] " " centre[3]
-    coords.Push(centreCoords)
-    MSgBox("Centre: " centreCoords)
-
-    i := 1
-    j := 1
-
-    loop levels {
-        loop divisions {
-            x := centre[1] + radius * Cos(360 / 12 * i)
-            z := centre[3] + radius * Sin(360 / 12 * i)
-            y := centre[2] + ((j - 2) * 10)
-
-            string := x " " y " " z
-
-            coords.Push(string)
-
-            i++
-        }
-        j++
-    }
-
-    return coords
-}
-
-moveAround(structure) {
-    coords := %structure%()
-    Send "{Escape}"
-    Sleep 200
-
-    i := 1
-
-    for coord in coords {
-        if (i == 1) {
-            i := 0
-            continue
-        }
-        Send "t"
-        Sleep 200
-        Send "/tp @s " coord " facing " coords[1] "{Enter}"
-        Sleep 8000
-        takeScreenshot(structure)
     }
 }
