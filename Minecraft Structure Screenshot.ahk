@@ -8,24 +8,23 @@ SCREENSHOT_SOURCE_DIR := getEnv("SCREENSHOT_SOURCE_DIR")
 
 ; [length, height, width, centreXdiff, centreYdiff, centreZdiff]
 structuresObj := {
-    village_savanna: ["pillager_outpost", 14],
     mansion: ["mansion", 60, [-22, -5, 10, 25]],
     desert_pyramid: ["desert_pyramid", 16, [-10, -5, 0, 10]],
-    village_desert: ["village_desert", 16, [-4, 0, 8, 15]],
     igloo: ["igloo", 10, [-2, 0, 4, 10]],
-    ;Todo - Add the rest of the structures
-    shipwreck: ["shipwreck", 14],
-    village_plains: ["village_plains", 14],
+    village_desert: ["village_desert", 16, [-4, 0, 8, 15]],
+    village_savanna: ["village_savanna", 16, [-4, 0, 8, 15]],
+    village_plains: ["village_plains", 16, [-4, 0, 8, 15]],
     swamp_hut: ["swamp_hut", 14],
-    village_taiga: ["village_taiga", 14],
+    shipwreck: ["shipwreck", 14],
     shipwreck_beached: ["shipwreck_beached", 14],
-    village_snowy: ["village_snowy", 14],
+    village_taiga: ["village_taiga", 16, [-4, 0, 8, 15]],
+    village_snowy: ["village_snowy", 16, [-4, 0, 8, 15]],
     jungle_pyramid: ["jungle_pyramid", 14],
-    pillager_outpost: ["pillager_outpost", 14],
+    pillager_outpost: ["pillager_outpost", 14, [-16, -12, -8, 0, 8], [0, 10, 20, 30, 50]],
 }
 
 ; 1. Select the structure
-current := structuresObj.igloo
+current := structuresObj.village_desert
 
 ; 2. Prepare the environment and move to the structure
 ^g:: ; Ctrl+G
@@ -69,8 +68,10 @@ findStructure(structure) {
     coords := getStructureCoordsFromLog(time)
 
     teleportTo(coords)
+    Sleep 2000
 
     mcCommand("/gamemode creative")
+    Sleep 1000
     toggleFlying()
     Sleep 8000
 
@@ -83,16 +84,16 @@ placeStructure(structure) {
 
 mcCommand(command) {
     Send "t"
-    Sleep 50
+    Sleep 150
     Send command "{Enter}"
-    Sleep 50
+    Sleep 150
 }
 
 moveScreenshots(structure) {
-    DirExist("TrainingData\" structure) || DirCreate("TrainingData\" structure)
+    DirExist("trainingdata\" structure) || DirCreate("trainingdata\" structure)
     loop files SCREENSHOT_SOURCE_DIR "\*.png" {
         if (FileExist(A_LoopFileFullPath) && DateDiff(A_Now, A_LoopFileTimeCreated, "s") <= 30) {
-            FileMove(A_LoopFileFullPath, "TrainingData\" structure "\" A_LoopFileName)
+            FileMove(A_LoopFileFullPath, "trainingdata\" structure "\" A_LoopFileName)
         }
     }
 }
@@ -107,6 +108,7 @@ scanStructure(structure, radius, levels := [-12, -8, 0, 8], angles := [10, 20, 3
     pi := 3.14159265359
 
     Send "{F1}"
+    Sleep 500
     for index, level in levels {
         loop picturesPerLevel {
             radians := ((360 / picturesPerLevel) * i) * (pi / 180)

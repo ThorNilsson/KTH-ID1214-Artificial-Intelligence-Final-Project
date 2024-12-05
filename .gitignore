@@ -1,5 +1,5 @@
 # Ignore the trainingdata folder
-#trainingdata/
+trainingdata/
 
 # Ignore test files
 test.ahk
