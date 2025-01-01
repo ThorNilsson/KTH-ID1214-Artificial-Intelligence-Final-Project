@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 2
+names: ['desert temple', 'pillager outpost']
+
+roboflow:
+  workspace: minecraft-structures
+  project: minecraft-structure-classifier
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/minecraft-structures/minecraft-structure-classifier/dataset/1

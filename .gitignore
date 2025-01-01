@@ -12,5 +12,8 @@ getPlayerCoordinatesFromLog.sh
 # Ignore .env files
 .env
 
+# Ignore python VSL virtual environment
+yolo/venv
+
 # Ignore coordinates file
 coords.txt
