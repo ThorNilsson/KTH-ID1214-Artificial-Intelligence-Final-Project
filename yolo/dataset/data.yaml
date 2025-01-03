@@ -1,6 +1,6 @@
-train: ../train/images
-val: ../valid/images
-test: ../test/images
+train: /mnt/c/Users/vladi/Desktop/KTH-ID1214-Artificial-Intelligence-Final-Project/yolo/dataset/train/images
+val: /mnt/c/Users/vladi/Desktop/KTH-ID1214-Artificial-Intelligence-Final-Project/yolo/dataset/valid/images
+test: /mnt/c/Users/vladi/Desktop/KTH-ID1214-Artificial-Intelligence-Final-Project/yolo/dataset/test/images
 
 nc: 2
 names: ['desert temple', 'pillager outpost']

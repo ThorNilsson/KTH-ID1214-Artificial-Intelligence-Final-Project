@@ -1,0 +1,13 @@
+train: /mnt/c/Users/vladi/Desktop/KTH-ID1214-Artificial-Intelligence-Final-Project/yolo/dataset-2000/train/images
+val: /mnt/c/Users/vladi/Desktop/KTH-ID1214-Artificial-Intelligence-Final-Project/yolo/dataset-2000/valid/images
+test: /mnt/c/Users/vladi/Desktop/KTH-ID1214-Artificial-Intelligence-Final-Project/yolo/dataset-2000/test/images
+
+nc: 4
+names: ['desert temple', 'igloo', 'mansion', 'pillager outpost']
+
+roboflow:
+  workspace: minecraft-structures
+  project: minecraft-structure-classifier
+  version: 2
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/minecraft-structures/minecraft-structure-classifier/dataset/2

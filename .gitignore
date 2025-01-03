@@ -15,5 +15,10 @@ getPlayerCoordinatesFromLog.sh
 # Ignore python VSL virtual environment
 yolo/venv
 
+# Ignore all images
+yolo/dataset-2000/test
+yolo/dataset-2000/train
+yolo/dataset-2000/valid
+
 # Ignore coordinates file
 coords.txt
